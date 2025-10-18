@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>osu! Collab Images</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #111;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #ff66aa;
+    }
+    .instructions {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #aaa;
+      font-size: 14px;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 25px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .image-card {
+      background: #1a1a1a;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 1px solid #333;
+    }
+    .image-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(255, 102, 170, 0.2);
+      border-color: #ff66aa;
+    }
+    .image-container {
+      width: 100%;
+      height: 200px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .image-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .image-card:hover .image-container img {
+      transform: scale(1.05);
+    }
+    .image-title {
+      padding: 12px 15px;
+      text-align: center;
+      font-weight: 500;
+      border-top: 1px solid #333;
+    }
+    .copy-notification {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.9);
+      color: white;
+      padding: 12px 25px;
+      border-radius: 5px;
+      border: 1px solid #ff66aa;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 100;
+      font-size: 14px;
+    }
+    .copy-notification.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <h1>osu! Collab Images</h1>
+  <div class="instructions">Click on image to copy its image URL</div>
+  
+  <div class="gallery">
+    <div class="image-card">
+      <div class="image-container">
+        <img src="images/koro.jpg" alt="Koro Collab">
+      </div>
+      <div class="image-title">Test Collab</div>
+    </div>
+    
+    <div class="image-card">
+      <div class="image-container">
+        <img src="images/collab1.png" alt="Collab 1">
+      </div>
+      <div class="image-title">Collab 1</div>
+    </div>
+    
+    <div class="image-card">
+      <div class="image-container">
+        <img src="images/collab2.jpg" alt="Collab 2">
+      </div>
+      <div class="image-title">Collab 2</div>
+    </div>
+    
+    <div class="image-card">
+      <div class="image-container">
+        <img src="images/collab3.webp" alt="Collab 3">
+      </div>
+      <div class="image-title">Collab 3</div>
+    </div>
+    
+
+  </div>
+  
+  <div class="copy-notification" id="copyNotification">Image URL copied to clipboard!</div>
+
+  <script>
+    document.querySelectorAll('.image-container img').forEach(img => {
+      img.addEventListener('click', () => {
+        navigator.clipboard.writeText(img.src).then(() => {
+          const notification = document.getElementById('copyNotification');
+          notification.classList.add('show');
+          setTimeout(() => {
+            notification.classList.remove('show');
+          }, 2000);
+        }).catch(err => {
+          console.error('Failed to copy: ', err);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
