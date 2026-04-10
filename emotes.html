@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>osu! Emotes</title>
+  <link rel="icon" type="image/x-icon" href="icons/U+2630(pink) small.ico">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>osu! Emotes</h1>
+  <div class="instructions">Click on emote to copy its URL</div>
+
+  <div class="gallery" id="gallery"></div>
+  
+  <div class="back-link">
+    <a href="index.html">← Back to Images</a>
+  </div>
+
+  <div class="copy-notification" id="copyNotification">URL copied to clipboard!</div>
+
+  <script>
+    function showNotification(message) {
+      const notification = document.getElementById('copyNotification');
+      notification.textContent = message;
+      notification.classList.add('show');
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 2000);
+    }
+
+    fetch('emotes.json')
+      .then(response => response.json())
+      .then(emotes => {
+        const gallery = document.getElementById('gallery');
+        
+        emotes.forEach(emoteName => {
+          const emotePath = `emotes/${emoteName}`;
+          const card = document.createElement('div');
+          card.className = 'image-card';
+          
+          card.innerHTML = `
+            <div class="image-container">
+              <img src="${emotePath}" alt="${emoteName}">
+            </div>
+            <div class="image-title">${emoteName}</div>
+            <div class="button-group">
+              <button class="copy-btn url-btn">Copy URL</button>
+              <button class="copy-btn md md-btn">Copy MD</button>
+            </div>
+          `;
+          
+          gallery.appendChild(card);
+          
+          const fullUrl = new URL(emotePath, window.location.href).href;
+          
+          card.querySelector('.url-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            navigator.clipboard.writeText(fullUrl).then(() => {
+              showNotification('URL copied to clipboard!');
+            }).catch(err => {
+              console.error('Failed to copy: ', err);
+            });
+          });
+          
+          card.querySelector('.md-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const mdText = `![](${fullUrl})`;
+            navigator.clipboard.writeText(mdText).then(() => {
+              showNotification('Markdown copied to clipboard!');
+            }).catch(err => {
+              console.error('Failed to copy: ', err);
+            });
+          });
+          
+          card.querySelector('img').addEventListener('click', () => {
+            navigator.clipboard.writeText(fullUrl).then(() => {
+              showNotification('URL copied to clipboard!');
+            }).catch(err => {
+              console.error('Failed to copy: ', err);
+            });
+          });
+        });
+      })
+      .catch(err => {
+        console.error('Failed to load emotes:', err);
+        document.getElementById('gallery').innerHTML = 
+          '<p style="grid-column: 1/-1; text-align: center; color: var(--color-pink);">Unable to load emotes. Please run generate-emotes.js</p>';
+      });
+  </script>
+</body>
+</html>
